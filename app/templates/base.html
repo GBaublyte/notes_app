@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/styles.css') }}">
+    <script src="{{ url_for('static', path='/js/script.js') }}" defer></script>
+</head>
+<body>
+<div class="header">
+    <h1>Notes App</h1>
+</div>
+<div class="container">
+    <h2>Welcome to the Notes App!</h2>
+    <p>Create and manage your notes with ease.</p>
+    <a href="{{ url_for('create_note') }}" class="button">Create Note</a>
+</div>
+</body>
+</html>
