@@ -2,10 +2,11 @@ from datetime import timedelta, datetime
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+import jwt
 from sqlalchemy.orm import Session
-from app import schemas, crud, database
+from app import crud, database
 from app.crud import pwd_context
+from app.database import User
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
@@ -13,8 +14,8 @@ ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def authenticate_user(db: Session, email: str, password: str):
-    user = crud.get_user_by_email(db, email)
+def authenticate_user(db: Session, username: str, password: str):
+    user = crud.get_user_by_username(db, username)
     if not user:
         return False
     if not pwd_context.verify(password, user.hashed_password):
@@ -33,9 +34,9 @@ def fake_verify_password(plain_password: str, hashed_password: str):
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -49,13 +50,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        username: str = payload.get("sub")
+        if username is None:
             raise credentials_exception
-        token_data = schemas.TokenData(email=email)
-    except JWTError:
+    except jwt.ExpiredSignatureError:
         raise credentials_exception
-    user = crud.get_user_by_email(db, email=token_data.email)
+    except jwt.InvalidTokenError:
+        raise credentials_exception
+
+    user = db.query(User).filter(User.username == username).first()
     if user is None:
         raise credentials_exception
     return user

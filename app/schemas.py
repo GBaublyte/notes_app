@@ -1,6 +1,9 @@
 from typing import Optional
 from pydantic import BaseModel
 
+class UserBase(BaseModel):
+    username: str
+
 
 class Token(BaseModel):
     access_token: str
@@ -8,17 +11,17 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    username: Optional[str] = None
 
 
 class UserCreate(BaseModel):
-    email: str
+    username: str
     password: str
 
 
 class User(BaseModel):
     id: int
-    email: str
+    username: str
 
     class Config:
         orm_mode = True

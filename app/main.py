@@ -4,14 +4,13 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
-from app import models, schemas
+from app import schemas
 from app.database import SessionLocal, engine, User, get_db
 from app.auth import create_access_token, get_current_user, fake_hash_password
-from app.models import UserBase
+from app.schemas import UserBase
 from app.schemas import UserCreate
 
 app = FastAPI()
-
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
@@ -31,7 +30,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.post("/users/", response_model=UserBase)
+@app.post("/users", response_model=UserBase)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = fake_hash_password(user.password)
     db_user = User(username=user.username, hashed_password=hashed_password)
@@ -40,16 +39,3 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return db_user
 
-@app.get("/", response_model=schemas.User)
-async def read_users_me(request: Request, current_user: schemas.User = Depends(get_current_user)):
-    return templates.TemplateResponse("index.html", {"request": request, "user": current_user})
-
-
-
-
-# Register, Category and Note APIs should be defined here
-# ...
-
-
-# Other necessary routes and functionalities
-# ...

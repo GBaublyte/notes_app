@@ -15,7 +15,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    tasks = relationship("Task", back_populates="owner")
+    tasks = relationship("Note", back_populates="owner")
 
 
 class Note(Base):
