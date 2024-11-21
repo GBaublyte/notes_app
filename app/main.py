@@ -7,6 +7,7 @@ from starlette.requests import Request
 from app import models, schemas
 from app.database import SessionLocal, engine
 from app.auth import authenticate_user, create_access_token, get_current_user
+from app.models import User
 
 app = FastAPI()
 
@@ -26,6 +27,29 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(Uaser).filter(User.username == form_data.username).first()
+    if not user or not fake_verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/users/", response_model=UserBase)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    hashed_password = fake_hash_password(user.password)
+    db_user = User(username=user.username, hashed_password=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 @app.get("/", response_model=schemas.User)
 async def read_users_me(request: Request, current_user: schemas.User = Depends(get_current_user)):
