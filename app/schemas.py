@@ -44,8 +44,8 @@ class Category(CategoryBase):
 
 
 class NoteBase(BaseModel):
-    title: str
-    content: str
+    note_name: str
+    description: str
     image_url: Optional[str] = None
     category_id: Optional[int] = None
 

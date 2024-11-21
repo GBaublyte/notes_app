@@ -15,19 +15,28 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    tasks = relationship("Note", back_populates="owner")
+    notes = relationship("Note", back_populates="owner")
 
 
 class Note(Base):
-    __tablename__ = "tasks"
+    __tablename__ = "notes"
     id = Column(Integer, primary_key=True, index=True)
     note_name = Column(String, index=True)
     description = Column(Text)
     status = Column(String, index=True, default="pending")
     owner_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="tasks")
-    to_be_done_by = Column(Date)
+    owner = relationship("User", back_populates="notes")
     created_at = Column(DateTime, default=datetime.now)
+    image_url = Column(String)
+    category_id = Column(Integer, ForeignKey("categories.id"))
+    category = relationship("Category", back_populates="notes")
+
+
+class Category(Base):
+    __tablename__ = "categories"
+    id = Column(Integer, primary_key=True, index=True)
+    category_name = Column(String, index=True)
+    notes = relationship("Note", back_populates="category")
 
 
 Base.metadata.create_all(bind=engine)

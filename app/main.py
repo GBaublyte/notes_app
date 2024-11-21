@@ -5,9 +5,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from app import schemas
-from app.database import SessionLocal, engine, User, get_db
+from app.database import SessionLocal, engine, User, get_db, Note
 from app.auth import create_access_token, get_current_user, fake_hash_password
-from app.schemas import UserBase
+from app.schemas import UserBase, NoteBase
 from app.schemas import UserCreate
 
 app = FastAPI()
@@ -27,7 +27,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.email})
+    access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/users", response_model=UserBase)
@@ -39,3 +39,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return db_user
 
+@app.post("/notes/", response_model=NoteBase)
+def create_note(task: NoteBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    note = Note(**task.model_dump(), owner_id=current_user.id)
+    db.add(note)
+    db.commit()
+    db.refresh(note)
+    return task
