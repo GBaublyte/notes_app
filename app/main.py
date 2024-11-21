@@ -7,7 +7,7 @@ from starlette.requests import Request
 from app import models, schemas
 from app.database import SessionLocal, engine
 from app.auth import authenticate_user, create_access_token, get_current_user
-from app.models import User
+
 
 app = FastAPI()
 
@@ -29,7 +29,7 @@ def get_db():
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(Uaser).filter(User.username == form_data.username).first()
+    user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not fake_verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
