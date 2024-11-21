@@ -18,10 +18,10 @@ class User(Base):
     tasks = relationship("Task", back_populates="owner")
 
 
-class Task(Base):
+class Note(Base):
     __tablename__ = "tasks"
     id = Column(Integer, primary_key=True, index=True)
-    task_name = Column(String, index=True)
+    note_name = Column(String, index=True)
     description = Column(Text)
     status = Column(String, index=True, default="pending")
     owner_id = Column(Integer, ForeignKey("users.id"))

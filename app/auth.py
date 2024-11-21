@@ -22,6 +22,14 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 
+def fake_hash_password(password: str):
+    return "fakehashed" + password
+
+
+def fake_verify_password(plain_password: str, hashed_password: str):
+    return fake_hash_password(plain_password) == hashed_password
+
+
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:

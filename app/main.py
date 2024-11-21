@@ -5,27 +5,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from app import models, schemas
-from app.database import SessionLocal, engine, User
-from app.auth import authenticate_user, create_access_token, get_current_user
-
+from app.database import SessionLocal, engine, User, get_db
+from app.auth import create_access_token, get_current_user, fake_hash_password
+from app.models import UserBase
+from app.schemas import UserCreate
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
-# Dependency to get DB session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @app.post("/token", response_model=schemas.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
