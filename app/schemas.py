@@ -26,6 +26,9 @@ class User(BaseModel):
     class Config:
         orm_mode = True
 
+class LoginUser(BaseModel):
+    username: str
+    password: str
 
 class CategoryBase(BaseModel):
     title: str
