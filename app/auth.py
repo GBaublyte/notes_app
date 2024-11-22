@@ -1,5 +1,3 @@
-from datetime import timedelta, datetime
-
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 import jwt
@@ -32,21 +30,18 @@ def fake_verify_password(plain_password: str, hashed_password: str):
     return fake_hash_password(plain_password) == hashed_password
 
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict):
     to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now() + expires_delta
-    else:
-        expire = datetime.now() + timedelta(minutes=60)
-    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
-async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)):
+async def get_current_user(request: Request):
+    token = request.cookies.get("access_token")
     print(f"Token: {token}")  # Debugging line
     if not token:
         return None
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -57,5 +52,4 @@ async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)
             return None
         return user
     except JWTError:
-        print(f"JWT error: {str(e)}")  # Debugging line
         return None

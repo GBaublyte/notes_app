@@ -4,12 +4,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
+from starlette.middleware import Middleware
+
 from app import schemas
 from app.schemas import UserBase, NoteBase, UserCreate
-from app.database import User, get_db, Note
+from app.database import User, get_db, Note, DBSessionMiddleware
 from app.auth import create_access_token, get_current_user, fake_hash_password, fake_verify_password
 
-app = FastAPI()
+app = FastAPI(middleware=[Middleware(DBSessionMiddleware)])
 
 app.mount("/static", StaticFiles(directory="app/static/"), name="static")
 
@@ -20,8 +22,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    return RedirectResponse(url="/login")
-
+    token = request.cookies.get("access_token")
+    if not token:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("base.html", {"request": request})
 
 @app.post("/token", response_model=schemas.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -52,16 +56,26 @@ async def login_get(request: Request):
 
 
 @app.post("/login", response_class=HTMLResponse)
-async def login_post(request: Request, username: str = Form(...), password: str = Form(...)):
-    user = User.get(username)
-    if user and fake_verify_password(password, user.hashed_password):
-        token = create_access_token(data={"sub": user.username})
-        response = RedirectResponse("/", status_code=303)
-        response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
-        return response
-    # Include debugging to check failed login
-    print("Invalid credentials")
-    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+async def login_post(request: Request, username: str = Form(...), password: str = Form(...),
+                     db: Session = Depends(get_db)):
+    user = db.query(User).filter_by(username=username).first()
+
+    if user is None:
+        print("No user found with username:", username)  # Debugging statement
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+
+    if not fake_verify_password(password, user.hashed_password):
+        print("Incorrect password for user:", username)  # Debugging statement
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+
+    token = create_access_token(data={"sub": user.username})
+    if not token:
+        print("Token creation failed for user:", username)  # Debugging statement
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+
+    response = RedirectResponse("/", status_code=303)
+    response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
+    return response
 
 
 @app.post("/notes/", response_model=NoteBase)

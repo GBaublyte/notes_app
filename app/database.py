@@ -1,7 +1,10 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Date
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, relationship  # , relationship
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship, Session  # , relationship
 from datetime import datetime
+from fastapi import Request, Response
+
+from starlette.middleware.base import BaseHTTPMiddleware
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -9,6 +12,22 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+class DBSessionMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = Response("Internal server error", status_code=500)
+        try:
+            request.state.db = Session(get_db())
+            response = await call_next(request)
+        finally:
+            request.state.db.close()
+        return response
 
 class User(Base):
     __tablename__ = "users"
@@ -42,9 +61,3 @@ class Category(Base):
 Base.metadata.create_all(bind=engine)
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
