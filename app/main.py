@@ -4,17 +4,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
-from starlette.middleware import Middleware
 
 from app import schemas
-from app.schemas import UserBase, NoteBase, UserCreate
-from app.database import User, get_db, Note, DBSessionMiddleware
+from app.schemas import UserBase, UserCreate, NoteCreate
+from app.database import User, get_db, Note
 from app.auth import create_access_token, get_current_user, fake_hash_password, fake_verify_password
 
-app = FastAPI(middleware=[Middleware(DBSessionMiddleware)])
+app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="app/static/"), name="static")
-
 templates = Jinja2Templates(directory="app/templates")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -78,12 +76,16 @@ async def login_post(request: Request, username: str = Form(...), password: str 
     return response
 
 
-@app.post("/notes/", response_model=NoteBase)
-def create_note(task: NoteBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    note = Note(**task.model_dump(), owner_id=current_user.id)
+@app.post("/notes/", response_model=NoteCreate, response_class=HTMLResponse)
+async def create_note(request: Request, note: NoteCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    note = Note(**note.model_dump(), owner_id=current_user.id)
     db.add(note)
     db.commit()
     db.refresh(note)
-    return task
+    return templates.TemplateResponse("create_note.html", {"request": request})
+
+@app.get("/logout", response_class=HTMLResponse)
+async def logout(request: Request):
+    response = RedirectResponse(url="/login", status_code=303)
+    response.delete_cookie(key="access_token")
+    return response

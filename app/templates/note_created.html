@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Note Created Successfully!</h2>
+<p>Title: {{ note.title }}</p>
+<p>Content: {{ note.content }}</p>
+<p>Created by User ID: {{ note.owner_id }}</p>
+{% endblock %}

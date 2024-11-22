@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create Note</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-
+<header>
+    <h1>Create Note</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+<main>
+    <form action="/notes/" method="post">
+        <input type="text" id="note_name" value="category" required>
+        <textarea id="description" required>write your note here</textarea>
+        <button type="submit">Create Note</button>
+    </form>
+</main>
 </body>
 </html>
