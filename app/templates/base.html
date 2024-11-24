@@ -14,8 +14,17 @@
 <div class="container">
     <h2>Welcome to the Notes App!</h2>
     <p>Create and manage your notes with ease.</p>
-    <a href="{{ url_for('create_note') }}" class="button">Create Note</a>
+    <button id="create-note">Create note</button>
 </div>
+
+<script>
+    document.getElementById('create-note').addEventListener('click', function() {
+        window.location.href = "/notes";
+    });
+</script>
+
+</body>
+</html>
 
 <nav>
     <a href="/">Home</a>

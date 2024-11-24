@@ -1,9 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class UserBase(BaseModel):
-    username: str
-
 
 class Token(BaseModel):
     access_token: str
@@ -26,6 +23,11 @@ class User(BaseModel):
     class Config:
         orm_mode = True
 
+
+class UserInDB(User):
+    hashed_password: str
+
+
 class LoginUser(BaseModel):
     username: str
     password: str
@@ -45,7 +47,6 @@ class Category(CategoryBase):
     class Config:
         orm_mode = True
 
-
 class NoteBase(BaseModel):
     note_name: str
     description: str
@@ -54,7 +55,9 @@ class NoteBase(BaseModel):
 
 
 class NoteCreate(NoteBase):
-    pass
+    note_name: str
+    description: str
+    owner_id: int
 
 
 class NoteUpdate(NoteBase):

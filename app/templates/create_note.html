@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Note</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
 <header>
@@ -12,12 +14,15 @@
         <a href="/logout">Logout</a>
     </nav>
 </header>
-<main>
-    <form action="/notes/" method="post">
-        <input type="text" id="note_name" value="category" required>
-        <textarea id="description" required>write your note here</textarea>
-        <button type="submit">Create Note</button>
-    </form>
-</main>
+<form action="/notes" method="post">
+    <label for="note_name">Category:</label>
+    <input type="text" id="note_name" name="note_name" required>
+
+    <label for="description">Description:</label>
+    <input id="description" name="description" placeholder="Write your note here..." required>
+
+    <button type="submit">Create Note</button>
+</form>
+
 </body>
 </html>

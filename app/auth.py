@@ -1,39 +1,57 @@
-from fastapi import Depends, Request, HTTPException
+from datetime import datetime, timezone
+import logging
+from datetime import timedelta
+from typing import Annotated
+
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 import jwt
-from jose import JWTError
+from jwt.exceptions import InvalidTokenError
 from sqlalchemy.orm import Session
 from starlette import status
 
-from app import crud
-from app.crud import pwd_context
-from app.database import User, get_db
+from app.crud import pwd_context, get_user
+from app.database import get_db
+from app.schemas import TokenData, User
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "132b159e356b9187054c4b5ec2f82b4f42e11b52f62a0818f57ff023d626db59"
 ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+logging.basicConfig(
+    filename='app.log',
+    level=logging.DEBUG,  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
+    datefmt='%Y-%m-%d %H:%M:%S',  # Date format
+)
 
 def authenticate_user(db: Session, username: str, password: str):
-    user = crud.get_user_by_username(db, username)
+    user = get_user(db, username)
     if not user:
         return False
-    if not pwd_context.verify(password, user.hashed_password):
+    if not verify_password(password, user.hashed_password):
         return False
     return user
 
 
-def fake_hash_password(password: str):
-    return "fakehashed" + password
+def verify_password(password: str, hashed_password: str):
+    return pwd_context.verify(password, hashed_password)
 
 
-def fake_verify_password(plain_password: str, hashed_password: str):
-    return fake_hash_password(plain_password) == hashed_password
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
 
-def create_access_token(data: dict):
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -49,12 +67,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-    except jwt.ExpiredSignatureError:
+        token_data = TokenData(username=username)
+    except InvalidTokenError:
         raise credentials_exception
-    except jwt.InvalidTokenError:
-        raise credentials_exception
-
-    user = db.query(User).filter(User.username == username).first()
+    user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
+
+async def get_current_active_user(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
