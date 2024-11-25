@@ -1159,3 +1159,38 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2024-11-25 11:38:02 - multipart.multipart - DEBUG - Calling on_field_data with data[35:38]
 2024-11-25 11:38:02 - multipart.multipart - DEBUG - Calling on_field_end with no data
 2024-11-25 11:38:02 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-25 11:55:00 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 11:55:00 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-25 11:55:00 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-25 12:03:08 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 12:03:08 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-25 12:03:08 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-25 12:03:30 - venv - ERROR - The token is not valid
+2024-11-25 12:07:35 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 12:07:35 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-25 12:07:35 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-25 12:07:51 - app.auth - ERROR - The token is not valid
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-25 12:08:26 - multipart.multipart - DEBUG - Calling on_end with no data

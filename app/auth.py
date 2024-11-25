@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import logging
 from datetime import timedelta
 from typing import Annotated
+import logging
 
 from fastapi import Depends, HTTPException, Cookie
 from fastapi.security import OAuth2PasswordBearer
@@ -27,6 +28,8 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
     datefmt='%Y-%m-%d %H:%M:%S',  # Date format
 )
+logger = logging.getLogger(__name__)
+
 
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user(db, username)
@@ -63,17 +66,21 @@ async def get_current_user(access_token: str = Cookie(None), db: Session = Depen
         headers={"WWW-Authenticate": "Bearer"},
     )
     if access_token is None:
+        logger.error("Access token is None")
         raise credentials_exception
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
+            logger.error("Username is None in token payload")
             raise credentials_exception
         token_data = TokenData(username=username)
     except InvalidTokenError:
+        logger.error("The token is not valid")
         raise credentials_exception
     user = db.query(User).filter(User.username == token_data.username).first()
     if user is None:
+        logger.error("User not found in database")
         raise credentials_exception
     return user
 

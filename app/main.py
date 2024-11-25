@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import FastAPI, Depends, HTTPException, status, Form, Request, Query
+from fastapi import FastAPI, Depends, HTTPException, status, Form, Request, Query, Path
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -118,6 +118,24 @@ async def create_note_post(
     except Exception as e:
         print(f"An error occurred: {e}")
         return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+
+
+@app.delete("/notes/delete/{note_id}", response_class=HTMLResponse)
+async def delete_note(
+        request: Request,
+        note_id: int = Path(..., description="The ID of the note to delete"),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
+
+    if note is None:
+        raise HTTPException(status_code=404, detail="Note not found or not authorized to delete this note")
+
+    db.delete(note)
+    db.commit()
+    return RedirectResponse("/", status_code=303)
+
 
 @app.get("/logout", response_class=HTMLResponse)
 async def logout():
