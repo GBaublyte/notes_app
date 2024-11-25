@@ -16,15 +16,6 @@ def get_db():
     finally:
         db.close()
 
-# class DBSessionMiddleware(BaseHTTPMiddleware):
-#     async def dispatch(self, request: Request, call_next):
-#         response = Response("Internal server error", status_code=500)
-#         try:
-#             request.state.db = Session(get_db())
-#             response = await call_next(request)
-#         finally:
-#             request.state.db.close()
-#         return response
 
 class User(Base):
     __tablename__ = "users"

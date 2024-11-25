@@ -10,11 +10,43 @@
 <body>
 <div class="header">
     <h1>Notes App</h1>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/logout">Logout</a>
+    </nav>
 </div>
 <div class="container">
     <h2>Welcome to the Notes App!</h2>
     <p>Create and manage your notes with ease.</p>
-    <button id="create_note_get">Create note</button>
+
+    <!-- Display success message if available -->
+    {% if message %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <h3>Create a New Note</h3>
+    <form action="/notes/post" method="post">
+        <label for="note_name">Note Name:</label>
+        <input type="text" id="note_name" name="note_name" required>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        <button type="submit">Create Note</button>
+    </form>
+
+    <h3>Your Notes</h3>
+    <ul id="notes_list">
+        {% for note in notes %}
+        <li>
+            <strong>{{ note.note_name }}</strong>: {{ note.description }}
+            <form action="/notes/delete/{{ note.id }}" method="post" style="display:inline;">
+                <input type="hidden" name="method" value="delete">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 
 <script>
@@ -23,12 +55,5 @@
     });
 </script>
 
-</body>
-</html>
-
-<nav>
-    <a href="/">Home</a>
-    <a href="/logout">Logout</a>
-</nav>
 </body>
 </html>

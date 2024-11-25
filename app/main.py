@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.schemas import UserCreate, Token, UserBase
+from app.schemas import UserCreate, Token, UserBase, UserInDB
 from app.database import get_db, Note, User
 from app.auth import create_access_token, get_current_user, authenticate_user, \
     ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash
@@ -27,7 +27,19 @@ async def root(request: Request):
     return templates.TemplateResponse("base.html", {"request": request})
 
 
-@app.post("/users", response_model=UserCreate, status_code=status.HTTP_201_CREATED)
+@app.get("/home", response_class=HTMLResponse)
+async def get_home(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+
+    # Fetch the current user's notes
+    notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+
+    # Pass the notes and user information to the template
+    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user})
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
@@ -36,11 +48,11 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
             detail="Username already registered",
         )
     hashed_password = get_password_hash(user.password)
-    db_user = UserBase(username=user.username, hashed_password=hashed_password)
+    db_user = User(username=user.username, hashed_password=hashed_password)  # changed to SQLAlchemy User model
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+    return db_user  # returning the SQLAlchemy model instance directly
 
 
 @app.get("/get-token", response_model=Token)
@@ -90,9 +102,22 @@ async def login_post(request: Request, username: str = Form(...), password: str 
         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
 
     token = create_access_token(data={"sub": username})
-    response = RedirectResponse("/", status_code=303)
+    response = RedirectResponse("/notes", status_code=303)
     response.set_cookie(key="access_token", value=token, httponly=True)  # Store token in cookie
     return response
+
+
+@app.get("/notes", response_class=HTMLResponse)
+async def get_notes(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user is None:
+        return RedirectResponse(url="/login")
+
+    # Fetch the user's notes
+    notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+
+    # Pass the notes to the template
+    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user})
+
 
 @app.get("/notes/get", response_class=HTMLResponse)
 async def create_note_get(request: Request, current_user: User = Depends(get_current_user)):
@@ -114,27 +139,41 @@ async def create_note_post(
         db.add(new_note)
         db.commit()
         db.refresh(new_note)
-        return templates.TemplateResponse("base.html", {"request": request, "note": new_note})
+
+        # Fetch the updated list of notes for the user
+        notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+
+        # Pass the notes and user information to the template
+        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user,
+                                                        "message": "Note created successfully"})
     except Exception as e:
         print(f"An error occurred: {e}")
         return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
 
-
-@app.delete("/notes/delete/{note_id}", response_class=HTMLResponse)
+@app.post("/notes/delete/{note_id}", response_class=HTMLResponse)
 async def delete_note(
         request: Request,
         note_id: int = Path(..., description="The ID of the note to delete"),
+        method: str = Form(...),
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
-    note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
+    # Check the method override
+    if method.lower() == "delete":
+        note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
 
-    if note is None:
-        raise HTTPException(status_code=404, detail="Note not found or not authorized to delete this note")
+        if note is None:
+            raise HTTPException(status_code=404, detail="Note not found or not authorized to delete this note")
 
-    db.delete(note)
-    db.commit()
-    return RedirectResponse("/", status_code=303)
+        # Delete the note
+        db.delete(note)
+        db.commit()
+
+    # Fetch the remaining notes
+    notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+    # Pass the remaining notes and user information to the template
+    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user,
+                                                    "message": "Note deleted successfully"})
 
 
 @app.get("/logout", response_class=HTMLResponse)
