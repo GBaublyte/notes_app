@@ -1,14 +1,16 @@
+import os
+import shutil
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import FastAPI, Depends, HTTPException, status, Form, Request, Query, Path
+from fastapi import FastAPI, Depends, HTTPException, status, Form, Request, Query, Path, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.schemas import UserCreate, Token, UserBase, UserInDB
+from app.schemas import UserCreate, Token
 from app.database import get_db, Note, User
 from app.auth import create_access_token, get_current_user, authenticate_user, \
     ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash
@@ -18,6 +20,10 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static/"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
+UPLOAD_FOLDER = "static/images/"
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
@@ -33,7 +39,11 @@ async def get_home(request: Request, db: Session = Depends(get_db), current_user
         return RedirectResponse(url="/login")
 
     # Fetch the current user's notes
-    notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+    try:
+        notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+    except Exception as e:
+        print(f"An error occurred while fetching notes: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
 
     # Pass the notes and user information to the template
     return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user})
@@ -131,11 +141,24 @@ async def create_note_post(
         request: Request,
         note_name: str = Form(...),
         description: str = Form(...),
+        image: UploadFile = File(None),  # Allow the image field to be optional
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
     try:
-        new_note = Note(note_name=note_name, description=description, owner_id=current_user.id)
+        image_url = None
+        if image:
+            _, ext = os.path.splitext(image.filename)
+            image_url = f"{note_name}{ext}"
+            with open(os.path.join(UPLOAD_FOLDER, image_url), "wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
+
+        new_note = Note(
+            note_name=note_name,
+            description=description,
+            owner_id=current_user.id,
+            image_url=image_url  # Save the image path in the DB
+        )
         db.add(new_note)
         db.commit()
         db.refresh(new_note)
@@ -149,6 +172,7 @@ async def create_note_post(
     except Exception as e:
         print(f"An error occurred: {e}")
         return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+
 
 @app.post("/notes/delete/{note_id}", response_class=HTMLResponse)
 async def delete_note(

@@ -18,7 +18,7 @@ def get_db():
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
@@ -26,17 +26,14 @@ class User(Base):
 
 
 class Note(Base):
-    __tablename__ = "notes"
+    __tablename__ = 'notes'
     id = Column(Integer, primary_key=True, index=True)
     note_name = Column(String, index=True)
-    description = Column(Text)
-    # status = Column(String, index=True, default="pending")
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    description = Column(String, index=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    image_url = Column(String, nullable=True)
+
     owner = relationship("User", back_populates="notes")
-    # created_at = Column(DateTime, default=datetime.now)
-    image_url = Column(String)
-    # category_id = Column(Integer, ForeignKey("categories.id"))
-    # category = relationship("Category", back_populates="notes")
 
 
 # class Category(Base):

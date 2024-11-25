@@ -27,11 +27,13 @@
     {% endif %}
 
     <h3>Create a New Note</h3>
-    <form action="/notes/post" method="post">
+    <form action="/notes/post" method="post" enctype="multipart/form-data">
         <label for="note_name">Note Name:</label>
         <input type="text" id="note_name" name="note_name" required>
         <label for="description">Description:</label>
         <textarea id="description" name="description" required></textarea>
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image">
         <button type="submit">Create Note</button>
     </form>
 
@@ -40,8 +42,11 @@
         {% for note in notes %}
         <li>
             <strong>{{ note.note_name }}</strong>: {{ note.description }}
+            {% if note.image_url %}
+            <img src="{{ url_for('static', path='images/' + note.image_url) }}" alt="Note Image" style="max-width: 100px;">
+            {% endif %}
             <form action="/notes/delete/{{ note.id }}" method="post" style="display:inline;">
-                <input type="hidden" name="method" value="delete">
+                <input type="hidden" name="_method" value="delete">
                 <button type="submit">Delete</button>
             </form>
         </li>

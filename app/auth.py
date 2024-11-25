@@ -1,17 +1,15 @@
 from datetime import datetime, timezone
-import logging
 from datetime import timedelta
-from typing import Annotated
 import logging
 
 from fastapi import Depends, HTTPException, Cookie
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from jwt.exceptions import InvalidTokenError
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
-from app.crud import pwd_context, get_user
 from app.database import get_db, User
 from app.schemas import TokenData
 
@@ -29,6 +27,12 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',  # Date format
 )
 logger = logging.getLogger(__name__)
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def get_user(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first()
 
 
 def authenticate_user(db: Session, username: str, password: str):
@@ -83,10 +87,3 @@ async def get_current_user(access_token: str = Cookie(None), db: Session = Depen
         logger.error("User not found in database")
         raise credentials_exception
     return user
-
-# async def get_current_active_user(
-#     current_user: Annotated[User, Depends(get_current_user)],
-# ):
-#     if current_user.disabled:
-#         raise HTTPException(status_code=400, detail="Inactive user")
-#     return current_user
