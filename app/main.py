@@ -262,3 +262,18 @@ async def logout():
     response = RedirectResponse(url="/login", status_code=303)
     response.delete_cookie(key="access_token")
     return response
+
+
+@app.get("/notes/search", response_class=HTMLResponse)
+async def search_notes(request: Request, query: str = Query(...), db: Session = Depends(get_db),
+                       current_user: User = Depends(get_current_user)):
+    if current_user is None:
+        return RedirectResponse(url="/login")
+
+    # Search for notes by title
+    notes = db.query(Note).filter(Note.owner_id == current_user.id, Note.note_name.contains(query)).all()
+
+    # Pass the search results to the template
+    return templates.TemplateResponse("base.html",
+                                      {"request": request, "notes": notes, "user": current_user, "search_query": query,
+                                       "message": "Search results for: " + query})
