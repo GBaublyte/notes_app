@@ -2139,3 +2139,51 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2024-11-25 20:14:36 - multipart.multipart - DEBUG - Calling on_field_data with data[7:13]
 2024-11-25 20:14:36 - multipart.multipart - DEBUG - Calling on_field_end with no data
 2024-11-25 20:14:36 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-25 20:18:58 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-25 20:21:10 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-25 20:24:00 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-25 20:24:06 - app.auth - ERROR - The token is not valid
+2024-11-25 20:24:11 - app.auth - ERROR - The token is not valid
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-25 20:24:18 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-25 20:24:18 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 20:24:18 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-25 20:24:18 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_field with data[42:61]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_value with data[63:90]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_data with data[94:101]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_field with data[145:164]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_value with data[166:195]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_data with data[199:214]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_data with data[0:2]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_field with data[260:279]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_value with data[281:329]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_field with data[331:343]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_value with data[345:355]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_data with data[359:1489]
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-11-25 20:25:23 - multipart.multipart - DEBUG - Calling on_end with no data

@@ -175,6 +175,62 @@ async def create_note_post(
         return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
 
 
+@app.get("/notes/edit/{note_id}", response_class=HTMLResponse)
+async def edit_note_get(
+        request: Request,
+        note_id: int,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
+    if note is None:
+        return templates.TemplateResponse("error_page.html", {"request": request,
+                                                              "error": "Note not found or not authorized to edit this note"})
+
+    return templates.TemplateResponse("edit_note.html", {"request": request, "note": note})
+
+
+@app.post("/notes/edit/{note_id}", response_class=HTMLResponse)
+async def edit_note_post(
+        request: Request,
+        note_id: int,
+        note_name: str = Form(...),
+        description: str = Form(...),
+        image: UploadFile = File(None),  # Allow the image field to be optional
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
+    if note is None:
+        return templates.TemplateResponse("error_page.html", {"request": request,
+                                                              "error": "Note not found or not authorized to edit this note"})
+
+    try:
+        if image:
+            filename = secure_filename(image.filename)
+            _, ext = os.path.splitext(filename)
+            image_url = f"{filename}"
+            with open(os.path.join(UPLOAD_FOLDER, image_url), "wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
+            note.image_url = image_url  # Update the image path in the DB
+
+        note.note_name = note_name
+        note.description = description
+
+        db.commit()
+        db.refresh(note)
+
+        # Fetch the updated list of notes for the user
+        notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
+
+        # Pass the notes and user information to the template
+        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user,
+                                                        "message": "Note updated successfully"})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+
+
 @app.post("/notes/delete/{note_id}", response_class=HTMLResponse)
 async def delete_note(
         request: Request,
