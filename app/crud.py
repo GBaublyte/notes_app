@@ -1,9 +1,8 @@
 from sqlalchemy.orm import Session
 from app import schemas
 from passlib.context import CryptContext
-
 from app.database import User
-from app.schemas import UserInDB
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -21,7 +20,6 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-# Functionality for Category
 def create_category(db: Session, category: schemas.CategoryCreate, user_id: int):
     db_category = schemas.Category(**category.model_dump(), owner_id=user_id)
     db.add(db_category)
@@ -49,7 +47,6 @@ def delete_category(db: Session, category_id: int):
     db.commit()
 
 
-# Functionality for Notes
 def create_note(db: Session, note: schemas.NoteCreate, user_id: int):
     db_note = schemas.Note(**note.model_dump(), owner_id=user_id)
     db.add(db_note)

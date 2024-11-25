@@ -14,12 +14,12 @@
 <div class="container">
     <h2>Welcome to the Notes App!</h2>
     <p>Create and manage your notes with ease.</p>
-    <button id="create-note">Create note</button>
+    <button id="create_note_get">Create note</button>
 </div>
 
 <script>
-    document.getElementById('create-note').addEventListener('click', function() {
-        window.location.href = "/notes";
+    document.getElementById('create_note_get').addEventListener('click', function() {
+        window.location.href = "/notes/get";
     });
 </script>
 
@@ -28,7 +28,7 @@
 
 <nav>
     <a href="/">Home</a>
-    <a href="/logout">Logout</a> <!-- Logout Button -->
+    <a href="/logout">Logout</a>
 </nav>
 </body>
 </html>

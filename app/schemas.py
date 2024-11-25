@@ -16,7 +16,7 @@ class UserCreate(BaseModel):
     password: str
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     id: int
     username: str
 
@@ -24,7 +24,7 @@ class User(BaseModel):
         orm_mode = True
 
 
-class UserInDB(User):
+class UserInDB(UserBase):
     hashed_password: str
 
 
@@ -54,17 +54,16 @@ class NoteBase(BaseModel):
     category_id: Optional[int] = None
 
 
-class NoteCreate(NoteBase):
+class NoteCreate(BaseModel):
     note_name: str
     description: str
-    owner_id: int
 
 
 class NoteUpdate(NoteBase):
     pass
 
 
-class Note(NoteBase):
+class Note(NoteCreate):
     id: int
     owner_id: int
 
