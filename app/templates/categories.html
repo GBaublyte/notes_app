@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/styles.css') }}">
+    <script src="{{ url_for('static', path='/js/script.js') }}" defer></script>
+</head>
+<body>
+<div class="header">
+    <h1>Categories</h1>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</div>
+<div class="container">
+    <h3>Create a New Category</h3>
+    <form action="/categories" method="post">
+        <label for="category_name">Category Name:</label>
+        <input type="text" id="category_name" name="category_name" required>
+        <button type="submit">Create Category</button>
+    </form>
+
+    <h3>Your Categories</h3>
+    <ul id="categories_list">
+        {% for category in categories %}
+        <li>
+            <strong>{{ category.name }}</strong>
+            <form action="/categories/delete/{{ category.id }}" method="post" style="display:inline;">
+                <input type="hidden" name="method" value="delete">
+                <button type="submit">Delete</button>
+            </form>
+            <a href="/categories/edit/{{ category.id }}">Edit</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Display success message if available -->
+    {% if message %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

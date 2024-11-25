@@ -20,8 +20,18 @@
     <form action="/notes/edit/{{ note.id }}" method="post" enctype="multipart/form-data">
         <label for="note_name">Note Name:</label>
         <input type="text" id="note_name" name="note_name" value="{{ note.note_name }}" required>
+
         <label for="description">Description:</label>
         <textarea id="description" name="description" required>{{ note.description }}</textarea>
+
+        <label for="category_id">Category:</label>
+        <select id="category_id" name="category_id">
+            <option value="">Select a category</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if note.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
         <label for="image">Image:</label>
         <input type="file" id="image" name="image">
         <button type="submit">Update Note</button>
