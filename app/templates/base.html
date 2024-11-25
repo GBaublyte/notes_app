@@ -46,7 +46,7 @@
             <img src="{{ url_for('static', path='images/' + note.image_url) }}" alt="Note Image" style="max-width: 100px;">
             {% endif %}
             <form action="/notes/delete/{{ note.id }}" method="post" style="display:inline;">
-                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="method" value="delete">
                 <button type="submit">Delete</button>
             </form>
         </li>
