@@ -308,6 +308,26 @@ async def delete_note(
                                                     "user": current_user,
                                                     "message": "Note deleted successfully"})
 
+@app.get("/notes/category/{category_id}", response_class=HTMLResponse)
+async def get_notes_by_category(
+        request: Request,
+        category_id: int,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    try:
+        # Fetch notes by category for the current user
+        notes = db.query(Note).filter(Note.owner_id == current_user.id, Note.category_id == category_id).all()
+        categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
+
+        # Render the template with the filtered notes
+        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+                                                        "user": current_user,
+                                                        "message": "Notes filtered by category"})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+
 
 @app.get("/categories", response_class=HTMLResponse)
 async def get_categories(request: Request, db: Session = Depends(get_db),
@@ -323,28 +343,36 @@ async def get_categories(request: Request, db: Session = Depends(get_db),
                                       {"request": request, "categories": categories, "user": current_user})
 
 
-@app.post("/categories", response_class=HTMLResponse)
-async def create_category(request: Request, category_name: str = Form(...), db: Session = Depends(get_db),
-                          current_user: User = Depends(get_current_user)):
+@app.post("/categories/create", response_class=HTMLResponse)
+async def create_category(
+        request: Request,
+        name: str = Form(...),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
     if current_user is None:
         return RedirectResponse(url="/login")
+    try:
+        # Create a new category
+        new_category = Category(
+            name=name,
+            owner_id=current_user.id
+        )
+        db.add(new_category)
+        db.commit()
+        db.refresh(new_category)
 
-    new_category = Category(
-        name=category_name,
-        owner_id=current_user.id
-    )
-    db.add(new_category)
-    db.commit()
-    db.refresh(new_category)
+        # Get current list of categories and notes for the user
+        categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
+        notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
 
-    # Fetch the updated list of categories
-    categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
-
-    # Pass the categories and user information to the template
-    return templates.TemplateResponse("categories.html",
-                                      {"request": request, "categories": categories, "user": current_user,
-                                       "message": "Category created successfully"})
-
+        # Render the template with updated categories
+        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+                                                        "user": current_user,
+                                                        "message": "Category created successfully"})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
 
 @app.get("/categories/edit/{category_id}", response_class=HTMLResponse)
 async def edit_category_get(

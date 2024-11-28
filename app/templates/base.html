@@ -30,6 +30,20 @@
     </div>
     {% endif %}
 
+    <h3>Create a New Category</h3>
+    <form action="/categories/create" method="post">
+        <label for="category_name">Category Name:</label>
+        <input type="text" id="category_name" name="name" required>
+        <button type="submit">Create Category</button>
+    </form>
+
+    <h3>Your Categories</h3>
+    <ul>
+        {% for category in categories %}
+        <li><a href="/notes/category/{{ category.id }}">{{ category.name }}</a></li>
+        {% endfor %}
+    </ul>
+
     <h3>Create a New Note</h3>
     <form action="/notes/post" method="post" enctype="multipart/form-data">
         <label for="note_name">Note Name:</label>
