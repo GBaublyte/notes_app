@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 from datetime import timedelta
 import logging
+from typing import Optional
 
 from fastapi import Depends, HTTPException, Cookie
 from fastapi.security import OAuth2PasswordBearer
 
 import jwt
-from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
@@ -17,7 +17,6 @@ from app.schemas import TokenData
 SECRET_KEY = "132b159e356b9187054c4b5ec2f82b4f42e11b52f62a0818f57ff023d626db59"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
@@ -53,7 +52,7 @@ def get_password_hash(password: str):
     return pwd_context.hash(password)
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -80,9 +79,10 @@ async def get_current_user(access_token: str = Cookie(None), db: Session = Depen
             logger.error("Username is None in token payload")
             raise credentials_exception
         token_data = TokenData(username=username)
-    except InvalidTokenError:
+    except jwt.DecodeError:
         logger.error("The token is not valid")
         raise credentials_exception
+
     user = db.query(User).filter(User.username == token_data.username).first()
     if user is None:
         logger.error("User not found in database")
