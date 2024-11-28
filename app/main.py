@@ -390,29 +390,35 @@ async def edit_category_get(
 
 
 @app.post("/categories/edit/{category_id}", response_class=HTMLResponse)
-async def edit_category_post(
+async def update_category(
         request: Request,
         category_id: int,
         category_name: str = Form(...),
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
-    category = db.query(Category).filter(Category.id == category_id, Category.owner_id == current_user.id).first()
-    if category is None:
-        return templates.TemplateResponse("error_page.html", {"request": request,
-                                                              "error": "Category not found or not authorized to edit this category"})
+    try:
+        # Fetch the category by ID
+        category = db.query(Category).filter(Category.id == category_id, Category.owner_id == current_user.id).first()
 
-    category.name = category_name
-    db.commit()
-    db.refresh(category)
+        # Update the category name
+        if category:
+            category.name = category_name
+            db.commit()
+            db.refresh(category)
+            message = "Category updated successfully"
+        else:
+            message = "Category not found"
 
-    # Fetch the updated list of categories
-    categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
+        # Render the home page or another page after updating
+        categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
+        notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
 
-    # Pass the categories and user information to the template
-    return templates.TemplateResponse("categories.html",
-                                      {"request": request, "categories": categories, "user": current_user,
-                                       "message": "Category updated successfully"})
+        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+                                                        "user": current_user, "message": message})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
 
 
 @app.post("/categories/delete/{category_id}", response_class=HTMLResponse)

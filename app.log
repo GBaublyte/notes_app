@@ -3360,3 +3360,67 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2024-11-28 21:11:06 - multipart.multipart - DEBUG - Calling on_headers_finished with no data
 2024-11-28 21:11:06 - multipart.multipart - DEBUG - Calling on_part_end with no data
 2024-11-28 21:11:06 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:13:45 - app.auth - ERROR - The token is not valid
+2024-11-28 21:13:50 - app.auth - ERROR - The token is not valid
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:13:57 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:13:57 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-28 21:13:57 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-28 21:13:57 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-28 21:18:36 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:18:36 - multipart.multipart - DEBUG - Calling on_field_name with data[0:4]
+2024-11-28 21:18:36 - multipart.multipart - DEBUG - Calling on_field_data with data[5:9]
+2024-11-28 21:18:36 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:18:36 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:19:32 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-28 21:19:33 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:19:33 - multipart.multipart - DEBUG - Calling on_field_name with data[0:4]
+2024-11-28 21:19:33 - multipart.multipart - DEBUG - Calling on_field_data with data[5:9]
+2024-11-28 21:19:33 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:19:33 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:19:37 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:19:37 - multipart.multipart - DEBUG - Calling on_field_name with data[0:4]
+2024-11-28 21:19:37 - multipart.multipart - DEBUG - Calling on_field_data with data[5:9]
+2024-11-28 21:19:37 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:19:37 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:19:46 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:19:46 - multipart.multipart - DEBUG - Calling on_field_name with data[0:4]
+2024-11-28 21:19:46 - multipart.multipart - DEBUG - Calling on_field_data with data[5:9]
+2024-11-28 21:19:46 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:19:46 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:22:56 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:23:17 - multipart.multipart - DEBUG - Calling on_end with no data
+2024-11-28 21:23:17 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\miliu\PycharmProjects\FastFast\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-28 21:23:17 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2024-11-28 21:23:17 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-11-28 21:26:00 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-11-28 21:26:09 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-11-28 21:26:09 - multipart.multipart - DEBUG - Calling on_field_name with data[0:13]
+2024-11-28 21:26:09 - multipart.multipart - DEBUG - Calling on_field_data with data[14:18]
+2024-11-28 21:26:09 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-11-28 21:26:09 - multipart.multipart - DEBUG - Calling on_end with no data

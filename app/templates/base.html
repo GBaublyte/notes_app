@@ -40,7 +40,14 @@
     <h3>Your Categories</h3>
     <ul>
         {% for category in categories %}
-        <li><a href="/notes/category/{{ category.id }}">{{ category.name }}</a></li>
+        <li>
+            <a href="/notes/category/{{ category.id }}">{{ category.name }}</a>
+            <form action="/categories/delete/{{ category.id }}" method="post" style="display:inline;">
+                <input type="hidden" name="method" value="delete">
+                <button type="submit">Delete</button>
+            </form>
+            <a href="/categories/edit/{{ category.id }}">Edit</a>
+        </li>
         {% endfor %}
     </ul>
 
