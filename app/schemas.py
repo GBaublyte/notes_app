@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Token(BaseModel):
@@ -20,8 +20,8 @@ class UserBase(BaseModel):
     id: int
     username: str
 
-    class Config:
-        orm_mode = True
+    class Config(ConfigDict):
+        from_attributes = True
 
 
 class UserInDB(UserBase):
@@ -44,8 +44,8 @@ class Category(CategoryBase):
     id: int
     owner_id: int
 
-    class Config:
-        orm_mode = True
+    class Config(ConfigDict):
+        from_attributes = True
 
 class NoteBase(BaseModel):
     note_name: str
@@ -67,5 +67,5 @@ class Note(NoteCreate):
     id: int
     owner_id: int
 
-    class Config:
-        orm_mode = True
+    class Config(ConfigDict):
+        from_attributes = True

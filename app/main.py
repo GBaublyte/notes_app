@@ -31,7 +31,7 @@ async def root(request: Request):
     token = request.cookies.get("access_token")
     if not token:
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse(request, "base.html", {"request": request})
 
 
 @app.get("/home", response_class=HTMLResponse)
@@ -45,10 +45,10 @@ async def get_home(request: Request, db: Session = Depends(get_db), current_user
         categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
     except Exception as e:
         print(f"An error occurred while fetching notes: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
     # Pass the notes, categories, and user information to the template
-    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "user": current_user,
+    return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "user": current_user,
                                                     "categories": categories})
 
 
@@ -103,7 +103,7 @@ async def login_for_access_token(
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_get(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request, "login.html", {"request": request})
 
 
 @app.post("/login", response_class=HTMLResponse)
@@ -111,7 +111,7 @@ async def login_post(request: Request, username: str = Form(...), password: str 
                      db: Session = Depends(get_db)):
     user = authenticate_user(db, username, password)
     if not user:
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+        return templates.TemplateResponse(request, "login.html", {"request": request, "error": "Invalid credentials"})
 
     token = create_access_token(data={"sub": username})
     response = RedirectResponse("/notes", status_code=303)
@@ -124,7 +124,7 @@ async def register_post(request: Request, username: str = Form(...), password: s
                         db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == username).first()
     if existing_user:
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Username already taken"})
+        return templates.TemplateResponse(request, "login.html", {"request": request, "error": "Username already taken"})
 
     hashed_password = get_password_hash(password)
     new_user = User(username=username, hashed_password=hashed_password)
@@ -148,7 +148,7 @@ async def get_notes(request: Request, db: Session = Depends(get_db), current_use
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
     # Pass the notes and categories to the template
-    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+    return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                     "user": current_user})
 
 
@@ -161,7 +161,7 @@ async def create_note_get(request: Request, db: Session = Depends(get_db),
     # Fetch the user's categories
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
-    return templates.TemplateResponse("create_note.html", {"request": request, "categories": categories})
+    return templates.TemplateResponse(request, "create_note.html", {"request": request, "categories": categories})
 
 
 @app.post("/notes/post", response_class=HTMLResponse)
@@ -201,12 +201,12 @@ async def create_note_post(
         categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
         # Pass the notes, categories, and user information to the template
-        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+        return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                         "user": current_user,
                                                         "message": "Note created successfully"})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
 
 @app.get("/notes/edit/{note_id}", response_class=HTMLResponse)
@@ -219,10 +219,10 @@ async def edit_note_get(
     note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
     if note is None:
-        return templates.TemplateResponse("error_page.html", {"request": request,
+        return templates.TemplateResponse(request, "error_page.html", {"request": request,
                                                               "error": "Note not found or not authorized to edit this note"})
 
-    return templates.TemplateResponse("edit_note.html", {"request": request, "note": note, "categories": categories})
+    return templates.TemplateResponse(request, "edit_note.html", {"request": request, "note": note, "categories": categories})
 
 
 @app.post("/notes/edit/{note_id}", response_class=HTMLResponse)
@@ -238,7 +238,7 @@ async def edit_note_post(
 ):
     note = db.query(Note).filter(Note.id == note_id, Note.owner_id == current_user.id).first()
     if note is None:
-        return templates.TemplateResponse("error_page.html", {"request": request,
+        return templates.TemplateResponse(request, "error_page.html", {"request": request,
                                                               "error": "Note not found or not authorized to edit this note"})
 
     try:
@@ -273,12 +273,12 @@ async def edit_note_post(
         categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
         # Pass the notes and categories to the template
-        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+        return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                         "user": current_user,
                                                         "message": "Note updated successfully"})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
 
 @app.post("/notes/delete/{note_id}", response_class=HTMLResponse)
@@ -304,7 +304,7 @@ async def delete_note(
     notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
     # Pass the remaining notes, categories, and user information to the template
-    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+    return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                     "user": current_user,
                                                     "message": "Note deleted successfully"})
 
@@ -321,12 +321,12 @@ async def get_notes_by_category(
         categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
         # Render the template with the filtered notes
-        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+        return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                         "user": current_user,
                                                         "message": "Notes filtered by category"})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
 
 @app.get("/categories", response_class=HTMLResponse)
@@ -339,7 +339,7 @@ async def get_categories(request: Request, db: Session = Depends(get_db),
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
     # Pass the categories to the template
-    return templates.TemplateResponse("categories.html",
+    return templates.TemplateResponse(request, "categories.html",
                                       {"request": request, "categories": categories, "user": current_user})
 
 
@@ -367,12 +367,12 @@ async def create_category(
         notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
 
         # Render the template with updated categories
-        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+        return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                         "user": current_user,
                                                         "message": "Category created successfully"})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
 @app.get("/categories/edit/{category_id}", response_class=HTMLResponse)
 async def edit_category_get(
@@ -383,10 +383,10 @@ async def edit_category_get(
 ):
     category = db.query(Category).filter(Category.id == category_id, Category.owner_id == current_user.id).first()
     if category is None:
-        return templates.TemplateResponse("error_page.html", {"request": request,
+        return templates.TemplateResponse(request, "error_page.html", {"request": request,
                                                               "error": "Category not found or not authorized to edit this category"})
 
-    return templates.TemplateResponse("edit_category.html", {"request": request, "category": category})
+    return templates.TemplateResponse(request, "edit_category.html", {"request": request, "category": category})
 
 
 @app.post("/categories/edit/{category_id}", response_class=HTMLResponse)
@@ -414,11 +414,11 @@ async def update_category(
         categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
         notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
 
-        return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+        return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                         "user": current_user, "message": message})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return templates.TemplateResponse("error_page.html", {"request": request, "error": str(e)})
+        return templates.TemplateResponse(request, "error_page.html", {"request": request, "error": str(e)})
 
 
 @app.post("/categories/delete/{category_id}", response_class=HTMLResponse)
@@ -443,7 +443,7 @@ async def delete_category(
     # Fetch the remaining categories
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
     # Pass the remaining categories and user information to the template
-    return templates.TemplateResponse("categories.html",
+    return templates.TemplateResponse(request, "categories.html",
                                       {"request": request, "categories": categories, "user": current_user,
                                        "message": "Category deleted successfully"})
 
@@ -466,6 +466,6 @@ async def search_notes(request: Request, query: str = Query(...), db: Session = 
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
 
     # Pass the search results to the template
-    return templates.TemplateResponse("base.html", {"request": request, "notes": notes, "categories": categories,
+    return templates.TemplateResponse(request, "base.html", {"request": request, "notes": notes, "categories": categories,
                                                     "user": current_user, "search_query": query,
                                                     "message": "Search results for: " + query})
