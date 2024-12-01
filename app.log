@@ -3685,3 +3685,145 @@ Traceback (most recent call last):
     raise uh.exc.InternalBackendError(
 passlib.exc.InternalBackendError: crypt.crypt() failed for unknown reason; passlib recommends running `pip install bcrypt` for general bcrypt support.(config=<hash <class 'str'> value omitted>, secret=<hash <class 'bytes'> value omitted>)
 2024-11-28 22:15:53 - passlib.handlers.bcrypt - DEBUG - 'os_crypt' backend lacks $2$ support, enabling workaround
+2024-12-01 22:00:39 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:00:49 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:00:56 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:00:56 - passlib.handlers.bcrypt - DEBUG - trapped unexpected response from 'os_crypt' backend: verify('test', b'$2$04$5BJqKfqMQvV7nS.yUguNcuRfMMOXK0xPWavM7pOzjEi5ze5T1k8/S'):
+Traceback (most recent call last):
+  File "/root/.local/lib/python3.9/site-packages/passlib/handlers/bcrypt.py", line 303, in safe_verify
+    return verify(secret, hash)
+  File "/root/.local/lib/python3.9/site-packages/passlib/utils/handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+  File "/root/.local/lib/python3.9/site-packages/passlib/handlers/bcrypt.py", line 837, in _calc_checksum
+    raise uh.exc.InternalBackendError(
+passlib.exc.InternalBackendError: crypt.crypt() failed for unknown reason; passlib recommends running `pip install bcrypt` for general bcrypt support.(config=<hash <class 'str'> value omitted>, secret=<hash <class 'bytes'> value omitted>)
+2024-12-01 22:00:56 - passlib.handlers.bcrypt - DEBUG - 'os_crypt' backend lacks $2$ support, enabling workaround
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_field with data[42:61]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_value with data[63:90]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_data with data[94:101]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_field with data[145:164]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_value with data[166:195]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_data with data[199:200]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_field with data[244:263]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_value with data[265:301]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_field with data[303:315]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_value with data[317:341]
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:01:02 - python_multipart.multipart - WARNING - Skipping data after last boundary
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_field with data[42:61]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_value with data[63:90]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_data with data[94:101]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_field with data[145:164]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_value with data[166:195]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_data with data[199:202]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_field with data[246:265]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_value with data[267:296]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_begin with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_field with data[344:363]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_value with data[365:401]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_field with data[403:415]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_value with data[417:441]
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_header_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_headers_finished with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_part_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:01:08 - python_multipart.multipart - WARNING - Skipping data after last boundary
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:12 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:16 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:25 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:03:32 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:07:13 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-12-01 22:10:00 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_name with data[0:8]
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_data with data[9:15]
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_start with no data
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_name with data[16:24]
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_data with data[25:31]
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_field_end with no data
+2024-12-01 22:11:07 - python_multipart.multipart - DEBUG - Calling on_end with no data
+2024-12-01 22:11:07 - passlib.handlers.bcrypt - DEBUG - trapped unexpected response from 'os_crypt' backend: verify('test', b'$2$04$5BJqKfqMQvV7nS.yUguNcuRfMMOXK0xPWavM7pOzjEi5ze5T1k8/S'):
+Traceback (most recent call last):
+  File "/root/.local/lib/python3.9/site-packages/passlib/handlers/bcrypt.py", line 303, in safe_verify
+    return verify(secret, hash)
+  File "/root/.local/lib/python3.9/site-packages/passlib/utils/handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+  File "/root/.local/lib/python3.9/site-packages/passlib/handlers/bcrypt.py", line 837, in _calc_checksum
+    raise uh.exc.InternalBackendError(
+passlib.exc.InternalBackendError: crypt.crypt() failed for unknown reason; passlib recommends running `pip install bcrypt` for general bcrypt support.(config=<hash <class 'str'> value omitted>, secret=<hash <class 'bytes'> value omitted>)
+2024-12-01 22:11:07 - passlib.handlers.bcrypt - DEBUG - 'os_crypt' backend lacks $2$ support, enabling workaround

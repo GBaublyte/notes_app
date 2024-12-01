@@ -37,7 +37,7 @@ async def root(request: Request):
 @app.get("/home", response_class=HTMLResponse)
 async def get_home(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if not current_user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/login", status_code=307)
 
     # Fetch the current user's notes and categories
     try:
@@ -156,12 +156,15 @@ async def get_notes(request: Request, db: Session = Depends(get_db), current_use
 async def create_note_get(request: Request, db: Session = Depends(get_db),
                           current_user: User = Depends(get_current_user)):
     if current_user is None:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        return RedirectResponse(url="/login")
 
     # Fetch the user's categories
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
-
-    return templates.TemplateResponse(request, "create_note.html", {"request": request, "categories": categories})
+    try:
+        return templates.TemplateResponse(request, "base.html", {"request": request, "categories": categories})
+    except Exception as e:
+        print(f"Template rendering failed with error: {e}")
+        return templates.TemplateResponse("error_page.html", {"request": request, "error": "Template not found"})
 
 
 @app.post("/notes/post", response_class=HTMLResponse)
