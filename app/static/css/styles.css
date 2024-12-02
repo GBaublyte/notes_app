@@ -258,7 +258,7 @@ button {
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    width: 150px; /* Fixed width */
+    width: 100px; /* Fixed width */
     height: 40px; /* Fixed height */
     line-height: center;
     text-align: center; /* Centers text horizontally */
