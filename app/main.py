@@ -443,19 +443,20 @@ async def delete_category(
         db.delete(category)
         db.commit()
 
-    # Fetch the remaining categories
+    # Fetch the remaining categories and notes for the user
     categories = db.query(Category).filter(Category.owner_id == current_user.id).all()
-    # Pass the remaining categories and user information to the template
-    return templates.TemplateResponse(request, "categories.html",
-                                      {"request": request, "categories": categories, "user": current_user,
-                                       "message": "Category deleted successfully"})
+    notes = db.query(Note).filter(Note.owner_id == current_user.id).all()
 
+    # Render the base.html with updated categories and a message
+    return templates.TemplateResponse(request, "base.html",
+                                      {"request": request, "notes": notes, "categories": categories,
+                                       "user": current_user, "message": "Category deleted successfully"})
 
-@app.get("/logout", response_class=HTMLResponse)
-async def logout():
-    response = RedirectResponse(url="/login", status_code=303)
-    response.delete_cookie(key="access_token")
-    return response
+# @app.get("/logout", response_class=HTMLResponse)
+# async def logout():
+#     response = RedirectResponse(url="/login", status_code=303)
+#     response.delete_cookie(key="access_token")
+#     return response
 
 
 @app.get("/notes/search", response_class=HTMLResponse)
