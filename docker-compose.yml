@@ -2,10 +2,15 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myapp:latest
     ports:
       - "8000:8000"
     volumes:
       - .:/app
     environment:
       - DATABASE_URL=sqlite:///./test.db
+
+    entrypoint: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

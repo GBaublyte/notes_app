@@ -1,5 +1,4 @@
-from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Token(BaseModel):
@@ -8,56 +7,17 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    username: str
 
 
 class UserCreate(BaseModel):
-    email: str
+    username: str
     password: str
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     id: int
-    email: str
+    username: str
 
-    class Config:
-        orm_mode = True
-
-
-class CategoryBase(BaseModel):
-    title: str
-
-
-class CategoryCreate(CategoryBase):
-    pass
-
-
-class Category(CategoryBase):
-    id: int
-    owner_id: int
-
-    class Config:
-        orm_mode = True
-
-
-class NoteBase(BaseModel):
-    title: str
-    content: str
-    image_url: Optional[str] = None
-    category_id: Optional[int] = None
-
-
-class NoteCreate(NoteBase):
-    pass
-
-
-class NoteUpdate(NoteBase):
-    pass
-
-
-class Note(NoteBase):
-    id: int
-    owner_id: int
-
-    class Config:
-        orm_mode = True
+    class Config(ConfigDict):
+        from_attributes = True

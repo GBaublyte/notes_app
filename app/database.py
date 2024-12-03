@@ -1,36 +1,11 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Date
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, relationship  # , relationship
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 
-DATABASE_URL = "sqlite:///./test.db"
+DATABASE_URL = "sqlite:///./app/main.db"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    tasks = relationship("Task", back_populates="owner")
-
-
-class Task(Base):
-    __tablename__ = "tasks"
-    id = Column(Integer, primary_key=True, index=True)
-    task_name = Column(String, index=True)
-    description = Column(Text)
-    status = Column(String, index=True, default="pending")
-    owner_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="tasks")
-    to_be_done_by = Column(Date)
-    created_at = Column(DateTime, default=datetime.now)
-
-
-Base.metadata.create_all(bind=engine)
 
 
 def get_db():
@@ -39,3 +14,36 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    notes = relationship("Note", back_populates="owner")
+    categories = relationship("Category", back_populates="owner")
+
+
+class Note(Base):
+    __tablename__ = 'notes'
+    id = Column(Integer, primary_key=True, index=True)
+    note_name = Column(String, index=True)
+    description = Column(String)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)  # Make category_id nullable
+    image_url = Column(String, nullable=True)
+    owner = relationship("User", back_populates="notes")
+    category = relationship("Category", back_populates="notes", uselist=False)  # Single category per note
+
+
+class Category(Base):
+    __tablename__ = "categories"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    owner = relationship("User", back_populates="categories")
+    notes = relationship("Note", back_populates="category", cascade="all, delete-orphan")
+
+
+Base.metadata.create_all(bind=engine)
