@@ -1,19 +1,14 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# Virtual environment
 .venv/
 
-# VS Code
 .vscode/
 
-# PyCharm
 .idea/
 
-# Environments
 .env
 env/
 ENV/
@@ -21,11 +16,8 @@ venv/
 ENV.bak/
 venv.bak/
 
-# macOS
 .DS_Store
 
-# SQLite database
 *.sqlite3
 
-# Swap files
 *.swp

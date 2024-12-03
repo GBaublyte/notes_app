@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -11,7 +11,6 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///./tests/test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create the tables
 Base.metadata.create_all(bind=engine)
 
 
@@ -23,22 +22,17 @@ def override_get_db():
         db.close()
 
 
-# Mock function to replace get_current_user during tests
 def override_get_current_user():
     return UserBase(username="testuser", hashed_password="hashed_testpassword", id=1)
 
 
 app.dependency_overrides[get_db] = override_get_db
 app.dependency_overrides[get_current_user] = override_get_current_user
-
 client = TestClient(app)
 
 
 def login_client():
-    """Simulate user login by creating an access token and setting it as a cookie."""
     db = next(override_get_db())
-
-    # Ensure test user exists
     user = db.query(User).filter(User.username == "testuser").first()
     if not user:
         hashed_password = get_password_hash("testpassword")
@@ -46,18 +40,13 @@ def login_client():
         db.add(user)
         db.commit()
         db.refresh(user)
-
-    # Create and set the token
     access_token = create_access_token(data={"sub": "testuser"})
     client.cookies.set("access_token", access_token)
 
 
 def test_root_redirects_to_login():
     response = client.get("/")
-    if response.status_code == 303:
-        assert response.headers["location"].endswith("/login")
-    else:
-        assert response.status_code == 200
+    assert response.status_code == 200
 
 
 def test_create_user_valid_user():
@@ -98,38 +87,31 @@ def test_register_no_password():
     assert response.status_code == 422
 
 
-class TestNotesEndpoints(unittest.TestCase):
-
-    def setUp(self):
-        self.user = UserBase(username="testuser", hashed_password="hashed_testpassword", id=1)
-        self.access_token = create_access_token(data={"sub": "testuser"})
-
-    def test_get_notes_authenticated(self):
-        response = client.get("/notes", headers={"Authorization": f"Bearer {self.access_token}"})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("notes", response.text)
+@pytest.fixture
+def access_token():
+    return create_access_token(data={"sub": "testuser"})
 
 
-    def test_create_note_post_success(self):
-        response = client.post("/notes/post", headers={"Authorization": f"Bearer {self.access_token}"},
-                               data={"note_name": "Test Note", "description": "This is a test note"})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("Note created successfully", response.text)
-
-    def test_create_note_post_with_image(self):
-        with open("test_image.png", "wb") as f:
-            f.write(b"fake image content")
-        with open("test_image.png", "rb") as img:
-            response = client.post("/notes/post", headers={"Authorization": f"Bearer {self.access_token}"},
-                                   data={"note_name": "Test Note", "description": "Test description"},
-                                   files={"image": img})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("Note created successfully", response.text)
-
-    def tearDown(self):
-        # Perform any necessary cleanup
-        pass
+def test_get_notes_authenticated(access_token):
+    response = client.get("/notes", headers={"Authorization": f"Bearer {access_token}"})
+    assert response.status_code == 200
+    assert "notes" in response.text
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_create_note_post_success(access_token):
+    response = client.post("/notes/post", headers={"Authorization": f"Bearer {access_token}"},
+                           data={"note_name": "Test Note", "description": "This is a test note"})
+    assert response.status_code == 200
+    assert "Note created successfully" in response.text
+
+
+def test_create_note_post_with_image(access_token):
+    image_path = "test_image.png"
+    with open(image_path, "wb") as f:
+        f.write(b"fake image content")
+    with open(image_path, "rb") as img:
+        response = client.post("/notes/post", headers={"Authorization": f"Bearer {access_token}"},
+                               data={"note_name": "Test Note", "description": "Test description"},
+                               files={"image": img})
+    assert response.status_code == 200
+    assert "Note created successfully" in response.text

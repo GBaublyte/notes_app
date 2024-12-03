@@ -12,12 +12,5 @@ services:
       - .:/app
     environment:
       - DATABASE_URL=sqlite:///./test.db
-    # Define entrypoint explicitly if necessary for custom startup scripts
-    entrypoint: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-    # Optionally add logging or other configuration settings
-    # logging:
-    #   driver: json-file
-    #   options:
-    #     max-size: "200k"
-    #     max-file: "10"
+    entrypoint: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

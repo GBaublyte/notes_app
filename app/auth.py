@@ -1,16 +1,11 @@
-from datetime import datetime, timezone
-from datetime import timedelta
-import logging
+from datetime import datetime, timezone, timedelta
 from typing import Optional
-
 from fastapi import Depends, HTTPException, Cookie
 from fastapi.security import OAuth2PasswordBearer
-
 import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
-
 from app.database import get_db, User
 from app.schemas import TokenData
 
@@ -20,13 +15,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
-logging.basicConfig(
-    filename='app.log',
-    level=logging.DEBUG,  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
-    datefmt='%Y-%m-%d %H:%M:%S',  # Date format
-)
-logger = logging.getLogger(__name__)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -70,21 +58,17 @@ async def get_current_user(access_token: str = Cookie(None), db: Session = Depen
         headers={"WWW-Authenticate": "Bearer"},
     )
     if access_token is None:
-        logger.error("Access token is None")
         raise credentials_exception
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            logger.error("Username is None in token payload")
             raise credentials_exception
         token_data = TokenData(username=username)
     except jwt.DecodeError:
-        logger.error("The token is not valid")
         raise credentials_exception
 
     user = db.query(User).filter(User.username == token_data.username).first()
     if user is None:
-        logger.error("User not found in database")
         raise credentials_exception
     return user
