@@ -8,11 +8,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from app.schemas import UserCreate, Token
-from app.database import get_db, Note, User, Category  # Assume Category model is added
-from app.auth import create_access_token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, \
-    get_password_hash
+from app.database import get_db, Note, User, Category
+from app.auth import create_access_token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash
 from werkzeug.utils import secure_filename
 
 app = FastAPI()
