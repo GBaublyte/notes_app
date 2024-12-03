@@ -23,7 +23,7 @@
                     {% endfor %}
                 </select>
                 <input type="file" id="image" name="image" accept="image/*">
-                <button type="submit" class="button">Create</button>
+                <button type="submit" class="button" style="width: 150px">Create</button>
             </form>
         </div>
     </div>
@@ -49,8 +49,8 @@
                 <div class="create-category">
                     <h3>Create a New Category</h3>
                     <form action="/categories/create" method="post" class="create-category-form">
-                        <input type="text" id="category_name" name="name" placeholder="Category Name" required>
-                        <button type="submit" class="button">Create</button>
+                        <input type="text" id="category_name" name="name" style="margin-bottom: 0px" placeholder="Category Name" required >
+                        <button type="submit" class="update-button">Create</button>
                     </form>
                 </div>
 
