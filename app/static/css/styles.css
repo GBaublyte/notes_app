@@ -252,6 +252,7 @@ textarea {
 }
 
 button {
+    margin-top: 15px;
     background-color: #aec5d4;
     color: white;
     font-size: 1.1em;
